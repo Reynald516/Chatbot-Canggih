@@ -18,6 +18,7 @@ def get_opeai_client():
     if not api_key:
         raise ValueError("OPENAI_API_KEY tidak ditemukan")
     return OpenAI(api_key=api_key)
+    client = get_openai_client()
 
 # New: default system prompt 
 DEFAULT_SYSTEM_PROMPT = (
