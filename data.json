@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "question": "halo",
+    "answer": "Halo juga, apa ada yang bisa saya bantu.",
+    "tags": [
+      "sapaan",
+      "umum"
+    ]
+  },
+  {
+    "id": 2,
+    "question": "siapa kamu",
+    "answer": "Aku adalah chatbot sederhana.",
+    "tags": [
+      "profil",
+      "umum"
+    ]
+  }
+]

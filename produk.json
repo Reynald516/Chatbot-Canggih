@@ -1,0 +1,14 @@
+[
+    {
+        "id":1,
+        "name": "Laptop Gaming",
+        "price": 12000000,
+        "tags": ["Laptop", "Gaming", "komputer"]
+    },
+    {
+        "id":2,
+        "name": "Headset Wireless",
+        "price": 750000,
+        "tags": ["headset", "audio", "music"]
+    }
+]
