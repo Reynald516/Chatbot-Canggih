@@ -13,7 +13,7 @@ load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Inisialisasi client OpenAI
-client = OpenAI(api_key=OPENAI_API_KEY)
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # New: default system prompt 
 DEFAULT_SYSTEM_PROMPT = (
