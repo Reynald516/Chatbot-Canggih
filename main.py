@@ -5,7 +5,7 @@ import os
 from openai import OpenAI
 from dotenv import load_dotenv
 from telegram import Bot, Update
-from telegram.ext import Dispatcher, CommandHandler, MessageHandler, Filters
+from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
 # Inisialisasi FastAPI
 app = FastAPI()
@@ -16,7 +16,8 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Load telegram
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-bot = Bot(token=TELEGRAM_TOKEN)
+application = Application.builder().token(TELEGRAM_TOKEN).build()
+bot = application.bot
 
 # Inisialisasi client OpenAI
 def get_openai_client():
@@ -136,10 +137,12 @@ def get_weather(city: str):
 async def telegram_webhook(request: Request):
     body = await request.json()
     update = Update.de_json(body, bot)
-    chat_id = update.message.chat.id
-    message_text = update.message.text
     
-    bot.send_message(chat_id=chat_id, text=f"Pesan kamu: {message_text}")
+    if update.message:
+        chat_id = update.message.chat.id
+        message_text = update.message.text
+        await bot.send_message(chat_id=chat_id, text=f"Pesan kamu: {message_text}")
+    
     return {"status": "ok"}
 
 # Endpoint untuk memanggil chatbot
