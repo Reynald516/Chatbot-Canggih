@@ -167,7 +167,7 @@ async def telegram_webhook(request: Request):
     if update.message:
         chat_id = update.message.chat.id
         message_text = update.message.text
-        response = await handle_chat(user_message) 
+        response = await handle_chat(message_text) 
         await bot.send_message(chat_id=chat_id, text=response)
     
     return {"status": "ok"}
@@ -178,7 +178,7 @@ async def chatbot(request: Request):
     req_json = await request.json()
     user_message = req_json.get("message")
     response = await handle_chat(user_message)
-    return response
+    return {"reply": response}
 
 # 🔹 Ambil semua data
 @app.get("/items")
