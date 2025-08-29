@@ -177,6 +177,12 @@ async def telegram_webhook(request: Request):
 async def chatbot(request: Request):
     req_json = await request.json()
     user_message = req_json.get("message")
+
+    if isinstance(user_message, dict):
+        user_message = user_message.get("text", "")
+    if not isinstance(user_message, str):
+        user_message = str(user_message)
+
     response = await handle_chat(user_message)
     return {"reply": response}
 
