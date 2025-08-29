@@ -132,24 +132,8 @@ def get_weather(city: str):
     except Exception as e:
         return f"Error ambil cuaca: {e}"
 
-# Webhook Telegram
-@app.post("/webhook/telegram")
-async def telegram_webhook(request: Request):
-    body = await request.json()
-    update = Update.de_json(body, bot)
-    
-    if update.message:
-        chat_id = update.message.chat.id
-        message_text = update.message.text
-        await bot.send_message(chat_id=chat_id, text=f"Pesan kamu: {message_text}")
-    
-    return {"status": "ok"}
-
-# Endpoint untuk memanggil chatbot
-@app.post("/")
-async def chatbot(request: Request):
-    req_json = await request.json()
-    user_message = req_json.get("message")
+# Fungsi inti untuk proses pesan
+async def handle_chat(user_message: str):
     bot_response = get_response(user_message)
 
     # Cek apakah user meminta info produk
@@ -172,7 +156,29 @@ async def chatbot(request: Request):
     # Kirim ke N8N
     send_to_n8n(user_message, bot_response)
 
-    return {"reply": bot_response}
+    return bot_response
+
+# Webhook Telegram
+@app.post("/webhook/telegram")
+async def telegram_webhook(request: Request):
+    body = await request.json()
+    update = Update.de_json(body, bot)
+    
+    if update.message:
+        chat_id = update.message.chat.id
+        message_text = update.message.text
+        response = await handle_chat(message_text) 
+        await bot.send_message(chat_id=chat_id, text=f"Pesan kamu: {message_text}")
+    
+    return {"status": "ok"}
+
+# Endpoint untuk memanggil chatbot
+@app.post("/")
+async def chatbot(request: Request):
+    req_json = await request.json()
+    user_message = req_json.get("message")
+    response = await handle_chat(message_text)
+    return response
 
 # 🔹 Ambil semua data
 @app.get("/items")
