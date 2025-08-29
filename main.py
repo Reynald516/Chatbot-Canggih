@@ -130,7 +130,18 @@ def get_weather(city: str):
             return f"Gagal ambil cuaca: {data.get('message', 'error tidak diketahui.')}"
     except Exception as e:
         return f"Error ambil cuaca: {e}"
+
+# Webhook Telegram
+@app.post("/webhook/telegram")
+async def telegram_webhook(request: Request):
+    body = await request.json()
+    update = Update.de_json(body, bot)
+    chat_id = update.message.chat.id
+    message_text = update.message.text
     
+    bot.send_message(chat_id=chat_id, text=f"Pesan kamu: {message_text}")
+    return {"status": "ok"}
+
 # Endpoint untuk memanggil chatbot
 @app.post("/")
 async def chatbot(request: Request):
