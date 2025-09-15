@@ -195,10 +195,10 @@ async def webhook_whatsapp(request: Request):
                             url = f"https://graph.facebook.com/v22.0/{WHATSAPP_PHONE_NUMBER_ID}/messages"
                             headers = {
                                 "Authorization": f"Bearer {WHATSAPP_TOKEN}",
-                                "Content-Type": "application/json
+                                "Content-Type": "application/json"
                             }
                             payload = {
-                                "messaging_produk": "whatsapp",
+                                "messaging_product": "whatsapp",
                                 "to": sender,
                                 "text": {"body": reply_text}
                             }
