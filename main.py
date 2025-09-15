@@ -5,7 +5,6 @@ import os
 from openai import OpenAI
 from dotenv import load_dotenv
 from telegram import Bot, Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from fastapi.responses import PlainTextResponse
 
 # Inisialisasi FastAPI
@@ -22,8 +21,7 @@ WHATSAPP_PHONE_NUMBER_ID = os.getenv("WHATSAPP_PHONE_NUMBER_ID")
 
 # Load telegram
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-application = Application.builder().token(TELEGRAM_TOKEN).build()
-bot = application.bot
+bot = Bot(TELEGRAM_TOKEN)
 
 # Inisialisasi client OpenAI
 def get_openai_client():
