@@ -6,6 +6,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from telegram import Bot, Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
+from fastapi.responses import PlainTextResponse
 
 # Inisialisasi FastAPI
 app = FastAPI()
@@ -13,6 +14,11 @@ app = FastAPI()
 # Load .env
 load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# Load Whatsapp
+WHATSAPP_VERIFY_TOKEN = os.getenv("WHATSAPP_VERIFY_TOKEN")
+WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
+WHATSAPP_PHONE_NUMBER_ID = os.getenv("WHATSAPP_PHONE_NUMBER_ID")
 
 # Load telegram
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
@@ -157,6 +163,48 @@ async def handle_chat(user_message: str):
     send_to_n8n(user_message, bot_response)
 
     return bot_response
+    
+# Webhook Whatsapp verifikasi
+@app.get("/webhook")
+async def verify(request: Request):
+    params = dict(request.query_params)
+    if params.get("hub.mode") == "subscribe" and params.get("hub.verify_token") == WHATSAPP_VERIFY_TOKEN:
+        return PlainTextResponse(params["hub.challenge"])
+    return {"error": "Token tidak valid"}
+
+# Webhook Whatsapp Menerima pesan
+@app.post("/webhook")
+async def webhook_whatsapp(request: Request):
+    data = await request.json()
+    print("Data masuk dari whatsapp:", data)
+    # Pastikan data valid
+    if "entry" in data:
+        for entry in data["entry"]:
+            if "changes" in entry:
+                for change in entry["changes"]:
+                    if "value" in change and "messages" in change["value"]:
+                        for message in change["value"]["messages"]:
+                            sender = message["from"] # Nomor Pengirim
+                            text = message.get("text", {}).get("body", "") # Isi Pesan
+                            print(f"Pesan dari {sender}: {text}")
+                            
+                            # Jawaban dari chatbot
+                            reply_text = await handle_chat(text)
+                            
+                            # Kirim balik ke Whatsapp
+                            url = f"https://graph.facebook.com/v22.0/{WHATSAPP_PHONE_NUMBER_ID}/messages"
+                            headers = {
+                                "Authorization": f"Bearer {WHATSAPP_TOKEN}",
+                                "Content-Type": "application/json
+                            }
+                            payload = {
+                                "messaging_produk": "whatsapp",
+                                "to": sender,
+                                "text": {"body": reply_text}
+                            }
+                            requests.post(url, headers=headers, json=payload)
+    return {"status": "ok"}
+   
 
 # Webhook Telegram
 @app.post("/webhook/telegram")
