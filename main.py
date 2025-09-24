@@ -13,7 +13,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[""],  # Bisa ganti "" jadi domain frontend kamu
+    allow_origins=["*"],  # Bisa ganti "" jadi domain frontend kamu
     allow_credentials=True,
     allow_methods=["*"],  # izinkan GET, POST, OPTIONS dll
     allow_headers=["*"],  # izinkan semua headers
