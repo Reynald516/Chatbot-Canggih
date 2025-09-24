@@ -8,7 +8,6 @@ from telegram import Bot, Update
 from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-
 # Inisialisasi FastAPI
 app = FastAPI()
 
