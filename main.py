@@ -6,9 +6,19 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from telegram import Bot, Update
 from fastapi.responses import PlainTextResponse
+from fastapi.middleware.cors import CORSMiddleware
+
 
 # Inisialisasi FastAPI
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[""],  # Bisa ganti "" jadi domain frontend kamu
+    allow_credentials=True,
+    allow_methods=["*"],  # izinkan GET, POST, OPTIONS dll
+    allow_headers=["*"],  # izinkan semua headers
+)
 
 # Load .env
 load_dotenv()
