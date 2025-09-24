@@ -234,7 +234,7 @@ async def chat_ui(request: Request):
         user_message = str(user_message)
 
     response = await handle_chat(user_message)
-    return {"reply": response}
+    return {"reply": response}
 
 # Endpoint untuk memanggil chatbot
 @app.post("/")
